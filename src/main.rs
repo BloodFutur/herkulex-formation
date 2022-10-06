@@ -68,57 +68,91 @@ fn main() -> ! {
     let (mut tx, rx) = serial.split();
     let mut delay = cp.SYST.delay(&clocks_serial);
 
-    hprintln!("Communication créée").ok();
-    hprintln!("Communication créée").ok();
 
 
     // La communication est une communication USART utilisant 2 ports : RX et TX
     // - TX est le port utilisé pour transmettre des informations
     // - RX est le port utilise pour recevoir des informations
     let communication = Communication::new(&mut tx, rx);
-    hprintln!("Communication créée");
+    // hprintln!("Communication créée");
 
     let motors = Motors::new(communication);
-    hprintln!("Motors créé");
+    // hprintln!("Motors créé");
 
-    // let motor0 = motors.new_motor(0x00);
-    // id = 0
-    // hprintln!("Motor0 créé");
+    let motorA = motors.new_motor(0x0A);
+    // id = 0xA
+    // hprintln!("MotorA créé");
 
     let motor2 = motors.new_motor(0x02);
     // id = 2
     // hprintln!("Motor2 créé");
+    
+    let motorB = motors.new_motor(0x0B);
+    let motor1 = motors.new_motor(0x01);
+    let motor6 = motors.new_motor(0x06);
 
-    // motor0.reboot();
+    motorA.reboot();
     motor2.reboot();
+    motor1.reboot();
+    motorB.reboot();
+    motor6.reboot();
     // hprintln!("servos redémarrés");
     delay.delay_ms(400_u16);
 
+
+
     // Afin de faire tourner les servos il est nécessaire d'activer le torque
     // Dans le cas contraire les servos ne tourneront pas
-    // motor0.enable_torque();
+    motorA.enable_torque();
     motor2.enable_torque();
+    motor1.enable_torque();
+    motorB.enable_torque();
+    motor6.enable_torque();
     // hprintln!("servos torque activé");
     delay.delay_ms(100_u16);
 
-    // hprintln!("Init fini");
-
+    motorA.clear_errors();
+    motor2.clear_errors();
+    motor1.clear_errors();
+    motorB.clear_errors();
+    motor6.clear_errors();
+    delay.delay_ms(400_u16);
 
     loop {
         // Récupère la température des deux servomoteurs et l'affiche dans la console de debug
-        // let t0 = motor0.get_temperature();
+        // let t0 = motorA.get_temperature();
         // hprintln!("temp servo0 : {:?}", t0);
         // let t2 = motor2.get_temperature();
         // hprintln!("temp servo2 : {:?}", t2);
 
-        // Fait des cycles allumé/eteint de 2s pour chaque servomoteur, en intercallé
 
-        // motor0.set_speed(512, Clockwise);
-        motor2.set_speed(0, Clockwise);
-        delay.delay_ms(2000_u16);
-
-        // motor0.set_speed(0, Clockwise);
+        motor1.set_speed(512, Clockwise);
+        delay.delay_ms(1000_u16);
         motor2.set_speed(512, Clockwise);
-        delay.delay_ms(2000_u16);
+        delay.delay_ms(1000_u16);
+
+        motor6.set_speed(512, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motorA.set_speed(512, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motorB.set_speed(512, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motor1.set_speed(0, Clockwise);
+        delay.delay_ms(1000_u16);
+        motor2.set_speed(0, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motor6.set_speed(0, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motorA.set_speed(0, Clockwise);
+        delay.delay_ms(1000_u16);
+
+        motorB.set_speed(0, Clockwise);
+        delay.delay_ms(1000_u16);
+
     }
 }
